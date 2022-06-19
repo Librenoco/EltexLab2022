@@ -1,6 +1,7 @@
+//Заполнить матрицу числами от 1 до N*N улиткой.
 #include <stdio.h>
 
-#define N 13
+#define N 10
 
 void main()
 {

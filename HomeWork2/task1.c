@@ -6,11 +6,11 @@
 #define N 3
 #define SIZE 12
 
-struct telephoneSubscriber
+struct telephoneUser
 {
+    long number;
     char firstName[SIZE];
     char lastName[SIZE];
-    long number;
 };
 enum menuItem
 {
@@ -22,13 +22,13 @@ enum menuItem
     EXIT
 };
 
-typedef struct telephoneSubscriber telephoneSubscriber;
+typedef struct telephoneUser telephoneUser;
 typedef enum menuItem menuItem;
 
 void main()
 {
     menuItem menuItems = START;
-    telephoneSubscriber users[N];
+    telephoneUser users[N];
 
     for (int i = 0; i < N; i++)
     {

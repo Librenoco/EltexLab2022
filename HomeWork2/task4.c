@@ -1,7 +1,8 @@
-//Телефонный справочник (функции)
+//Телефонный справочник (функции и динамическая память)
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <malloc.h>
 
 #define N 3
 #define SIZE 12
@@ -39,18 +40,12 @@ void main()
 void phoneBookMenu()
 {
     menuItem menuItems = START;
-    telephoneUser users[N];
 
-    for (int i = 0; i < N; i++)
+    telephoneUser *pUsers = calloc(N, sizeof(telephoneUser));
+    if (pUsers == NULL)
     {
-        users[i].number = 0;
-        users[i].firstName[0] = '-';
-        users[i].lastName[0] = '-';
-        for (int j = 1; j < SIZE; j++)
-        {
-            users[i].firstName[j] = '\0';
-            users[i].lastName[j] = '\0';
-        }
+        printf("ERROR");
+        exit(-1);
     }
 
     system("clear");
@@ -70,28 +65,28 @@ void phoneBookMenu()
         {
         case ADD_NEW_USER:
         {
-            phoneBookAddUser(users);
+            phoneBookAddUser(pUsers);
             menuItems = START;
             break;
         }
 
         case OUTPUT_USER_LIST:
         {
-            phoneBookOutputUserList(users);
+            phoneBookOutputUserList(pUsers);
             menuItems = START;
             break;
         }
 
         case USER_SEARCH:
         {
-            phoneBookSearchUser(users);
+            phoneBookSearchUser(pUsers);
             menuItems = START;
             break;
         }
 
         case USER_DELETE:
         {
-            phoneBookDeleteUser(users);
+            phoneBookDeleteUser(pUsers);
             menuItems = START;
             break;
         }
@@ -109,9 +104,10 @@ void phoneBookMenu()
             break;
         }
     }
+    free(pUsers);
 }
 
-void phoneBookDeleteUser(struct telephoneUser *users)
+void phoneBookDeleteUser(struct telephoneUser *pUsers)
 {
     system("clear");
     printf("Удаление пользователя\n\n");
@@ -120,20 +116,14 @@ void phoneBookDeleteUser(struct telephoneUser *users)
     int recordNumber = 0;
     scanf("%i", &recordNumber);
 
-    users[recordNumber - 1].number = 0;
-    users[recordNumber - 1].firstName[0] = '-';
-    users[recordNumber - 1].lastName[0] = '-';
-
-    for (int i = 1; i < SIZE; i++)
-    {
-        users[recordNumber - 1].firstName[i] = '\0';
-        users[recordNumber - 1].lastName[i] = '\0';
-    }
+    pUsers[recordNumber - 1].number = 0;
+    pUsers[recordNumber - 1].firstName[0] = '\0';
+    pUsers[recordNumber - 1].lastName[0] = '\0';
 
     printf("\nПользователь удалён\n\n");
 }
 
-void phoneBookAddUser(struct telephoneUser *users)
+void phoneBookAddUser(struct telephoneUser *pUsers)
 {
     system("clear");
     printf("Добавление нового пользователя\n\n");
@@ -141,7 +131,7 @@ void phoneBookAddUser(struct telephoneUser *users)
     for (int i = 0; i < N; i++)
     {
         printf("Запись под номером %i: ", i + 1);
-        if ((users[i].number == 0) && (users[i].firstName[0] == '-') && (users[i].lastName[0] == '-'))
+        if ((pUsers[i].number == 0) && (pUsers[i].firstName[0] == '\0') && (pUsers[i].lastName[0] == '\0'))
         {
             printf("Свободная\n");
         }
@@ -157,7 +147,7 @@ void phoneBookAddUser(struct telephoneUser *users)
     int recordNumber = 0;
     scanf("%i", &recordNumber);
 
-    if ((users[recordNumber - 1].number != 0) && (users[recordNumber - 1].firstName[0] != '-') && (users[recordNumber - 1].lastName[0] != '-'))
+    if ((pUsers[recordNumber - 1].number != 0) && (pUsers[recordNumber - 1].firstName[0] != '-') && (pUsers[recordNumber - 1].lastName[0] != '-'))
     {
         system("clear");
         printf("Запись под номером %i занята\n\n", recordNumber);
@@ -165,16 +155,16 @@ void phoneBookAddUser(struct telephoneUser *users)
     else
     {
         printf("\nНомер пользователя: ");
-        scanf("%ld", &users[recordNumber - 1].number);
+        scanf("%ld", &pUsers[recordNumber - 1].number);
         printf("Имя пользователя: ");
-        scanf("%s", users[recordNumber - 1].firstName);
+        scanf("%s", pUsers[recordNumber - 1].firstName);
         printf("Фамилия пользователя: ");
-        scanf("%s", users[recordNumber - 1].lastName);
+        scanf("%s", pUsers[recordNumber - 1].lastName);
         system("clear");
     }
 }
 
-void phoneBookSearchUser(struct telephoneUser *users)
+void phoneBookSearchUser(struct telephoneUser *pUsers)
 {
     system("clear");
     printf("Поиск пользователя по имени\n\n");
@@ -192,28 +182,28 @@ void phoneBookSearchUser(struct telephoneUser *users)
 
     for (int i = 0; i < N; i++)
     {
-        if (strcmp(users[i].firstName, userName) == 0)
+        if (strcmp(pUsers[i].firstName, userName) == 0)
         {
             printf("User №%i", i + 1);
-            printf("\nНомер пользователя: %ld ", users[i].number);
-            printf("\nИмя пользователя: %s ", users[i].firstName);
-            printf("\nФамилия пользователя: %s \n\n", users[i].lastName);
+            printf("\nНомер пользователя: %ld ", pUsers[i].number);
+            printf("\nИмя пользователя: %s ", pUsers[i].firstName);
+            printf("\nФамилия пользователя: %s \n\n", pUsers[i].lastName);
         }
     }
 
     printf("\n");
 }
 
-void phoneBookOutputUserList(struct telephoneUser *users)
+void phoneBookOutputUserList(struct telephoneUser *pUsers)
 {
     system("clear");
 
     for (int i = 0; i < N; i++)
     {
         printf("\nUser №%i", i + 1);
-        printf("\nНомер пользователя: %ld ", users[i].number);
-        printf("\nИмя пользователя: %s ", users[i].firstName);
-        printf("\nФамилия пользователя: %s \n", users[i].lastName);
+        printf("\nНомер пользователя: %ld ", pUsers[i].number);
+        printf("\nИмя пользователя: %s ", pUsers[i].firstName);
+        printf("\nФамилия пользователя: %s \n", pUsers[i].lastName);
     }
 
     printf("\n");

@@ -1,3 +1,4 @@
+//Создание файла, чтение из файла и запись в файл
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>

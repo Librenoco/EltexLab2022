@@ -14,10 +14,7 @@ int main(void) {
   int result = 0;
   int errorMknod = 0;
   char name[]="test.fifo";
-  char buff[60];
-  for (int i = 0; i < 60; i++) {
-    buff[i] = '\0';
-  }
+  char buff[60] = {'\0'};
 
   fd = open(name, O_RDONLY);
   if(fd < 0) {

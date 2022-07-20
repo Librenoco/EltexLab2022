@@ -16,10 +16,7 @@ int main(void) {
   int errorMkfifo = 0;
   int errorUnlink = 0;
   char name[]="test.fifo";
-  char buff[60];
-  for (int i = 0; i < 60; i++) {
-    buff[i] = '\0';
-  }
+  char buff[60] = {'\0'};
 
   signal(SIGPIPE, SIG_IGN);
   unlink(name);
